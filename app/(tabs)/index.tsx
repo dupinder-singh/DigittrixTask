@@ -1,5 +1,5 @@
 import { ActivityIndicator, Alert, FlatList, Text, TextInput, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { fetchUsers } from "../../src/api/userApi";
 import React, { useEffect, useState } from 'react'
 import { User } from "../../src/dataModel/userResponse";
@@ -7,6 +7,7 @@ import UserItemCard from "../../src/components/UserItemCard";
 import { isNetworkAvailable } from "@/src/api/checkNetwork";
 
 const index = () => {
+  const insets = useSafeAreaInsets();
 
 
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -130,7 +131,7 @@ const index = () => {
     )
   }
   return (
-    <SafeAreaView style={{flex:1}}>
+    <View style={{flex:1,paddingTop:insets.top}}>
       <TextInput
         placeholder="Search by name..."
         value={searchText}
@@ -140,6 +141,7 @@ const index = () => {
           padding: 10,
           borderRadius: 8,
           margin: 4,
+          marginTop:10
         }}/>
 
    
@@ -166,7 +168,7 @@ const index = () => {
         />
       }
 
-    </SafeAreaView>
+    </View>
   )
 }
 

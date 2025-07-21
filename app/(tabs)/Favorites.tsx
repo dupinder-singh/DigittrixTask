@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { FlatList, Platform, StatusBar, Text, TextInput, View } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { User } from '../../src/dataModel/userResponse'
 import { useFavorites } from '../../src/context/FavContext'
 import UserItemCard from '../../src/components/UserItemCard'
 const Favorites = () => {
+    const insets = useSafeAreaInsets();
     const { favorites } = useFavorites();
     const [filteredFavorites, setFilteredFavorites] = useState<User[]>(favorites);
     const [searchText, setSearchText] = useState('');
@@ -14,14 +15,14 @@ const Favorites = () => {
     }, [searchText, favorites])
 
     // Function to filter users based on search text
-     const searchDataForUserList = (usersList:User[])=>{
-       const searchLowerCase = searchText.trim().toLowerCase();
-       const filtered = searchLowerCase ?
-       usersList.filter(user =>
-         `${user.first_name} ${user.last_name}`.toLowerCase().includes(searchLowerCase)
-       ) : usersList;
-       setFilteredFavorites(filtered);
-     }
+    const searchDataForUserList = (usersList: User[]) => {
+        const searchLowerCase = searchText.trim().toLowerCase();
+        const filtered = searchLowerCase ?
+            usersList.filter(user =>
+                `${user.first_name} ${user.last_name}`.toLowerCase().includes(searchLowerCase)
+            ) : usersList;
+        setFilteredFavorites(filtered);
+    }
 
     const userGrouping = (users: User[]): User[][] => {
         const result: User[][] = [];
@@ -57,7 +58,7 @@ const Favorites = () => {
         )
     }
     return (
-        <SafeAreaView>
+        <View style={{ paddingTop: insets.top }}>
             <TextInput
                 placeholder="Search by name..."
                 value={searchText}
@@ -66,22 +67,28 @@ const Favorites = () => {
                     backgroundColor: 'white',
                     padding: 10,
                     borderRadius: 8,
-                    margin: 10,
+                    margin: 4,
+                    marginTop: 10
                 }}
             />
-            {filteredFavorites.length === 0 ?
-                <View style={{ height: '100%', justifyContent: 'center', alignItems: 'center' }}>
-                    <Text >No Favourites</Text>
-                </View>
-                :
-                <FlatList
-                    data={userGrouping(filteredFavorites)}
-                    keyExtractor={(_, index) => index.toString()}
-                    renderItem={renderItems}
-                />
-            }
 
-        </SafeAreaView>
+            <FlatList
+                data={userGrouping(filteredFavorites)}
+                keyExtractor={(_, index) => index.toString()}
+                renderItem={renderItems}
+                ListEmptyComponent={
+                    <View style={{ alignItems: 'center' }}>
+                        <Text>No users found</Text>
+                    </View>
+                }
+                contentContainerStyle={{
+                    flexGrow: 1,
+                    justifyContent: filteredFavorites.length === 0 ? 'center' : 'flex-start',
+                }}
+            />
+
+
+        </View>
     )
 }
 

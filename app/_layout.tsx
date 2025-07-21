@@ -7,6 +7,6 @@ export default function RootLayout() {
       <Stack >
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       </Stack>
-    </FavoriteProvider>;
+    </FavoriteProvider>
   </SafeAreaProvider>
 }
